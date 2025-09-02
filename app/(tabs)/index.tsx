@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardScreen from "../screens/dashboard/DashboardScreen";
+import AuthScreen from "../screens/auth/AuthScreen";
 
 export default function HomeScreen() {
-  return <DashboardScreen />;
+  return <AuthScreen />;
 }
