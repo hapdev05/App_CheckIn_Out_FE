@@ -7,8 +7,10 @@ import {
   SafeAreaView,
   StatusBar,
   Animated,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 const AuthScreen = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -18,6 +20,7 @@ const AuthScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(1));
+  const [isLoading, setIsLoading] = useState(false);
 
   const switchTab = (tab: string) => {
     // Hiệu ứng fade out
@@ -42,6 +45,60 @@ const AuthScreen = () => {
         useNativeDriver: true,
       }).start();
     });
+  };
+
+  // Xử lý đăng nhập
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Lỗi", "Vui lòng nhập đầy đủ email và mật khẩu");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Giả lập đăng nhập thành công
+      console.log("Đăng nhập thành công:", { email });
+
+      // Chuyển đến Dashboard
+      router.replace("/dashboard");
+    } catch (error) {
+      Alert.alert("Lỗi đăng nhập", "Email hoặc mật khẩu không đúng");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Xử lý đăng ký
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Lỗi", "Mật khẩu xác nhận không khớp");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      console.log("Đăng ký thành công:", { email });
+
+      // Chuyển đến Dashboard
+      router.replace("/dashboard");
+    } catch (error) {
+      Alert.alert("Lỗi đăng ký", "Có lỗi xảy ra trong quá trình đăng ký");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderLoginForm = () => (
@@ -96,8 +153,14 @@ const AuthScreen = () => {
       </TouchableOpacity>
 
       {/* Continue Button */}
-      <TouchableOpacity className="bg-blue-500 rounded-lg py-4 items-center mb-8">
-        <Text className="text-white text-base font-semibold">Continue</Text>
+      <TouchableOpacity
+        className="bg-blue-500 rounded-lg py-4 items-center mb-8"
+        onPress={handleLogin}
+        disabled={isLoading}
+      >
+        <Text className="text-white text-base font-semibold">
+          {isLoading ? "Đang đăng nhập..." : "Continue"}
+        </Text>
       </TouchableOpacity>
 
       {/* Or Divider */}
@@ -193,8 +256,14 @@ const AuthScreen = () => {
       </View>
 
       {/* Sign Up Button */}
-      <TouchableOpacity className="bg-blue-500 rounded-lg py-4 items-center mb-8">
-        <Text className="text-white text-base font-semibold">Sign Up</Text>
+      <TouchableOpacity
+        className="bg-blue-500 rounded-lg py-4 items-center mb-8"
+        onPress={handleSignUp}
+        disabled={isLoading}
+      >
+        <Text className="text-white text-base font-semibold">
+          {isLoading ? "Đang đăng ký..." : "Sign Up"}
+        </Text>
       </TouchableOpacity>
 
       {/* Or Divider */}
